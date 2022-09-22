@@ -17,4 +17,6 @@ db.likes.belongsTo(db.user, { foreignKey: "user_id" });
 db.user.hasMany(db.posts, { foreignKey: "user_id" });
 db.posts.hasMany(db.comment, { foreignKey: "posts_id" });
 db.posts.hasMany(db.likes, { foreignKey: "posts_id" });
+
+//export db
 module.exports = db;

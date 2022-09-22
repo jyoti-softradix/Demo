@@ -11,7 +11,7 @@ const salt = 10;
 //create user
 async function signup(req, res) {
   try {
-    const { name, email, username, password } = req.body;
+    const { name, email, username, password, role } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -28,6 +28,7 @@ async function signup(req, res) {
       Email: email,
       Username: username,
       Password: hash,
+      Role: role,
     };
     const result = await Users.create(userObj);
     return res.send(result);
@@ -53,14 +54,14 @@ async function loginUser(req, res) {
     const userData = result.toJSON();
     const match = await comparePass(password, userData.Password);
     if (match) {
-      // const otpCode = Math.floor(Math.random() * 1000000 + 1);
-      // await result.update({ Otp: otpCode });
-      const msg =
-        "Never give up what you really want to do. The person with big dreams is more powerful than one with all the facts";
-      if (msg) {
+      const otpCode = Math.floor(Math.random() * 1000000 + 1);
+      await result.update({ Otp: otpCode });
+      // const msg =
+      //   "Never give up what you really want to do. The person with big dreams is more powerful than one with all the facts";
+      if (otpCode) {
         const to = userData.Email;
-        const subject = "Thought of the Day";
-        const html = `<h1>Small message to encourage you is : <b>${msg}</b></h1>`;
+        const subject = "My app verification";
+        const html = `<h1> My app verification otp is: <b>${otpCode}</b></h1>`;
 
         const emailStatus = nodeMailer.sendMail(to, subject, html);
         if (emailStatus) {

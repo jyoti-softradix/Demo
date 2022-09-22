@@ -7,7 +7,6 @@ const comment = require("./Routers/comments.router");
 const like = require("./Routers/likes.router");
 const auth = require("./Routers/auth.router");
 const { validateJWTToken } = require("./Common/helper");
-//const cron = require("node-cron");
 const passport = require("passport");
 const session = require("express-session");
 require("./Common/passport_setup");

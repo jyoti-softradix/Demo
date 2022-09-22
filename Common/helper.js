@@ -1,9 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const { user } = require("../Models");
 dotenv.config();
 process.env.TOKEN_SECRET;
 // const { check, validationResult } = require("express-validator");
+const userNotAllowedPath = [{ path: "/user", method: "DELETE" }];
 
 function generateToken(userData) {
   return jwt.sign(userData, process.env.TOKEN_SECRET);
@@ -43,6 +45,15 @@ async function validateJWTToken(req, res, next) {
       req.user = result;
       console.log("result : ", result);
       next();
+    }
+    const match = userNotAllowedPath.find((val) => val.method == req.method);
+    if (match) {
+      const userRole = req.user.role;
+      if (userRole == "admin") {
+        return next();
+      } else {
+        res.status(400).json("You don't have permission ");
+      }
     }
   } catch (e) {
     return res.status(500).json({ message: e.message });

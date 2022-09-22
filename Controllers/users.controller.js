@@ -39,14 +39,18 @@ function updateUser(req, res) {
 }
 
 //delete user
-function deleteUser(req, res) {
-  Users.destroy({ where: { id: req.params.id } })
-    .then(() => {
-      res.send("Deleted data successfully" + req.params.id);
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
-    });
+async function deleteUser(req, res) {
+  try {
+    const getData = await Users.findAll({ where: { id: req.params.id } });
+    if (getData && getData.length) {
+      Users.destroy({ where: { id: req.params.id } });
+      res.status(200).json({ message: "Deleted user successfully" });
+    } else {
+      res.status(400).json({ message: "user doesn't exist" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 }
 
 module.exports = {
