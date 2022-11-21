@@ -25,13 +25,15 @@ function getOneUser(req, res) {
 
 //update user
 function updateUser(req, res) {
+  const {body} = req;
   const newObj = {
-    Name: req.body.Name,
-    Email: req.body.Email,
+    first_name:body.first_name,
+    last_name: body.last_name,
+    email: body.email,
   };
-  Users.update(newObj, { where: { Email: req.body.Email } })
-    .then(() => {
-      res.send("Updated data successfully" + req.body.Email);
+ Users.update(newObj, { where: { email: body.email } })
+    .then((data) => {
+      res.send("Updated data successfully", data);
     })
     .catch((err) => {
       res.status(500).json({ message: err.message });
@@ -40,16 +42,20 @@ function updateUser(req, res) {
 
 //delete user
 async function deleteUser(req, res) {
+  const {params} = req;
   try {
-    const getData = await Users.findAll({ where: { id: req.params.id } });
+    console.log(1);
+    const getData = await Users.findOne({ where: { id: params.id } });
+    console.log("getData", getData);
     if (getData && getData.length) {
-      Users.destroy({ where: { id: req.params.id } });
+      console.log(2);
+      Users.destroy({ where: { id: params.id } });
       res.status(200).json({ message: "Deleted user successfully" });
     } else {
       res.status(400).json({ message: "user doesn't exist" });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json("error", err.message);
   }
 }
 

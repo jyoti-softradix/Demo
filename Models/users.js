@@ -7,24 +7,28 @@ module.exports = (sequelize, Sequelize) => {
       autoNull: false,
       primaryKey: true,
     },
-    Name: {
+    first_name: {
       type: Sequelize.STRING,
       autoNull: false,
     },
-    Email: {
+    last_name: {
+      type: Sequelize.STRING,
+      autoNull: false,
+    },
+    email: {
       type: Sequelize.STRING,
     },
-    Otp: {
+    otp: {
       type: Sequelize.STRING,
       autoNull: true,
     },
-    Username: {
+    username: {
       type: Sequelize.STRING,
     },
-    Password: {
+    password: {
       type: Sequelize.STRING,
     },
-    Role: {
+    role: {
       type: Sequelize.STRING,
     },
   });

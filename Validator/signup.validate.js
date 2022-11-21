@@ -3,10 +3,10 @@ const signupSchema = {
   //   notEmpty: true,
   //   errorMessage: "ID is wrong",
   // },
-  name: {
-    notEmpty: true,
-    errorMessage: "Field should not be empty",
-  },
+  // name: {
+  //   notEmpty: true,
+  //   errorMessage: "Field should not be empty",
+  // },
   email: {
     isEmail: true,
     errorMessage: "Please enter a valid email address",

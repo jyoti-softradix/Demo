@@ -8,6 +8,9 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+// create table if not exists
+db.sequelize.sync({ force: false });
+
 db.user = require("./users")(sequelize, Sequelize);
 db.posts = require("./posts")(sequelize, Sequelize);
 db.comment = require("./comments")(sequelize, Sequelize);

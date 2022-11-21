@@ -42,7 +42,6 @@ async function validateJWTToken(req, res, next) {
     } else {
       const result = await decodeToken(token, res);
       req.user = result;
-      console.log("result : ", result);
       if (result.Role == "admin") {
         return next();
       }

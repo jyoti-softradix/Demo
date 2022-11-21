@@ -121,8 +121,6 @@ app.get("/logout", function (req, res) {
   });
 });
 
-//create table if not exists
-db.sequelize.sync({ force: false });
 //server
 app.listen(5000, () => {
   console.log("Server is running on Port: 5000");

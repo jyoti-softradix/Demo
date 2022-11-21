@@ -11,7 +11,7 @@ const salt = 10;
 //create user
 async function signup(req, res) {
   try {
-    const { name, email, username, password, role } = req.body;
+    const { first_name, last_name, email, username, password, role } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -24,14 +24,15 @@ async function signup(req, res) {
     // }
     const hash = await bcrypt.hash(password, salt);
     const userObj = {
-      Name: name,
-      Email: email,
-      Username: username,
-      Password: hash,
-      Role: role,
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
+      username: username,
+      password: hash,
+      role: role,
     };
     const result = await Users.create(userObj);
-    return res.send(result);
+    res.status(200).json("User signup successfully",result);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -52,10 +53,11 @@ async function loginUser(req, res) {
     });
 
     const userData = result.toJSON();
-    const match = await comparePass(password, userData.Password);
+    const match = await comparePass(password, userData.password);
+    console.log("match", match);
     if (match) {
       const otpCode = Math.floor(Math.random() * 1000000 + 1);
-      await result.update({ Otp: otpCode });
+      await result.update({ otp: otpCode });
       // const msg =
       //   "Never give up what you really want to do. The person with big dreams is more powerful than one with all the facts";
       if (otpCode) {
@@ -101,54 +103,28 @@ async function verifyOtp(req, res) {
 
     const { username, otp } = req.body;
     const data = await Users.findOne({
-      where: { Username: username },
+      where: { username: username },
     });
-
     const userData = data.toJSON();
-    if (otp === data.Otp) {
+    if (otp !== userData.otp) {
+      res.status(401).json({ message: "Invalid user" });
+    } else {
       const token = await generateToken(JSON.stringify(userData), res);
-
       const noPassAndOtp = await Users.findOne({
-        where: { Username: username },
-        attributes: { exclude: ["Password", "Otp"] },
+        where: { username: username },
+        attributes: { exclude: ["password", "otp"] },
       });
       const finalOutput = noPassAndOtp.toJSON();
       const user = {
         ...finalOutput,
         token,
       };
-      return res.status(200).json({ message: "Login successfully", user });
-    } else {
-      return res.status(401).json({ message: "Invalid user" });
+       res.status(200).json({ message: "Login successfully", user });
     }
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    res.status(500).json("error", err.message);
   }
 }
-
-//forgetPassword
-// async function forgetPassword(req, res) {
-//   try {
-//     let data = await USER.findOneAndUpdate(
-//       { Otp: req.body.otpCode },
-//       { Password: req.body.password, Otp: "0" },
-//       { new: true }
-//     );
-//     if (data) {
-//       let currentTime = new Date().getTime();
-//       let diff = data.expireIn - currentTime;
-//       if (diff <= 0) {
-//         res.json({ error: "token expire" });
-//       } else {
-//         res.json({ message: "Password changed successfully" });
-//       }
-//     } else {
-//       res.json({ error: "Invalid Otp" });
-//     }
-//   } catch (e) {
-//     res.json({ error: "something went wrong" });
-//   }
-// }
 
 module.exports = {
   loginUser,

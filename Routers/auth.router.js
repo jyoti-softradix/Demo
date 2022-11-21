@@ -40,7 +40,7 @@ router.post("/signup", checkSchema(signupSchema), (req, res) => {
 //   }
 // );
 
-router.get("/verify_otp", checkSchema(verifyOtpSchema), (req, res) => {
+router.post("/verify_otp", checkSchema(verifyOtpSchema), (req, res) => {
   authController.verifyOtp(req, res);
 });
 
